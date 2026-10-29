@@ -3,7 +3,6 @@ title: Index of Refraction (IOR) Reference for CG Artists
 date: a-long-time-ago
 description: This is useful for CG renders with realistic transmissive shaders.
 ---
-
 # Index of Refraction (IOR) Reference for CG Artists
 
 > A practical lookup sheet for shading, look development, and rendering. Values below are transcribed from the supplied reference; they are not independently verified.

@@ -3,7 +3,6 @@ title: Hello World
 date: 2026-10-28
 description: The very first blog post — testing the new blog platform.
 ---
-
 # Hello World
 
 Welcome to the first post on this blog! This is a test of all the **markdown features** the build script supports.

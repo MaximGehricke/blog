@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<meta name="description" content="{{META_DESCRIPTION}}">
@@ -11,18 +12,15 @@
 </head>
 
 <body class="bg">
-	<header>
-		<a href="https://maximgehricke.com" class="font1" id="logo">MAXIM GEHRICKE</a>
-		<nav id="menunav" class="menu">
-			<ul id="menuul">
-				<li><a class="font1" href="https://maximgehricke.com">Portfolio</a></li>
-				<li><a class="font1" href="../index.html"
-						style="color: transparent;text-shadow: 0 0 2px rgba(255,255,255,1);">Blog</a></li>
+	<main class="blog-layout">
+		<aside class="blog-sidebar">
+			<a href="../index.html" class="font1" id="logo">Maxim's Blog</a>
+			<h2 class="font1 blog-subheading">Posts</h2>
+			<ul class="blog-tree" id="blog-tree">
+				{{SIDEBAR_POSTS}}
 			</ul>
-		</nav>
-	</header>
+		</aside>
 
-	<main>
 		<article class="blog-post">
 			<p class="blog-date font1">{{DATE}}</p>
 			<h1 class="blog-title font1">{{TITLE}}</h1>
@@ -42,4 +40,5 @@
 	<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 
 </body>
+
 </html>

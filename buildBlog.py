@@ -5,26 +5,13 @@ and updates the blog index (index.html).
 Usage:
     python buildBlog.py            Build all posts and rebuild index
     python buildBlog.py --new      Open posts/ folder to add a new markdown file
-
-Markdown files go in:  posts/
-Each .md file must start with a YAML-style front-matter block:
-    ---
-    title: My Post Title
-    date: 2026-10-28
-    description: A short description for SEO.
-    ---
-
-    Your markdown content here...
-
-Images referenced in markdown (e.g. ![alt](my_image.jpg)) should be placed
-in the same posts/ folder or a subfolder. They will be copied alongside the
-generated HTML into posts/ (paths are kept relative).
 """
 
 import os
 import re
 import sys
 import shutil
+import datetime
 import html as html_module
 
 # ---------------------------------------------------------------------------
@@ -34,52 +21,185 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 POSTS_DIR = os.path.join(SCRIPT_DIR, "posts")
 TEMPLATE_PATH = os.path.join(SCRIPT_DIR, "blog_template.html")
 INDEX_PATH = os.path.join(SCRIPT_DIR, "index.html")
+BUILD_INFO_PATH = os.path.join(SCRIPT_DIR, ".last_build.txt")
 
 
 # ---------------------------------------------------------------------------
-#  Front-matter parser
+#  Markdown Link Updater
 # ---------------------------------------------------------------------------
-def parse_frontmatter(text):
-    """Return (metadata_dict, body_markdown)."""
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
-    if not match:
-        # No front-matter — derive title from first heading
+def update_markdown_links(text):
+    """
+    Ensure all links in the markdown text adhere to proper markdown syntax:
+    - Leaves existing markdown links [text](url) and images ![alt](url) untouched.
+    - Leaves fenced code blocks and inline code untouched.
+    - Leaves standalone video embed URLs on their own line untouched.
+    - Converts <http...> autolinks to [http...](http...).
+    - Converts bare http(s) URLs to [url](url), correctly stripping trailing punctuation.
+    """
+    lines = text.split("\n")
+    out_lines = []
+    in_code_block = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Check for fenced code block toggle
+        if stripped.startswith("```"):
+            in_code_block = not in_code_block
+            out_lines.append(line)
+            continue
+
+        if in_code_block:
+            out_lines.append(line)
+            continue
+
+        # Keep standalone YouTube/Vimeo embeds intact on their own line
+        if re.match(r'^\s*https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/|vimeo\.com/)\S+\s*$', line):
+            out_lines.append(line)
+            continue
+
+        # Protect inline code `...`
+        code_tokens = []
+        def code_repl(m):
+            code_tokens.append(m.group(0))
+            return f"\x00CODE_{len(code_tokens)-1}\x00"
+
+        processed = re.sub(r'`[^`]+`', code_repl, line)
+
+        # Convert <https?...> autolinks to markdown [url](url)
+        processed = re.sub(r'<(https?://[^>]+)>', r'[\1](\1)', processed)
+
+        # Protect existing markdown links and images: [text](url) or ![alt](url)
+        link_tokens = []
+        def link_repl(m):
+            link_tokens.append(m.group(0))
+            return f"\x00LINK_{len(link_tokens)-1}\x00"
+
+        processed = re.sub(r'!?\[[^\]]*\]\([^)]+\)', link_repl, processed)
+
+        # Convert remaining bare URLs to [url](url)
+        def bare_url_repl(m):
+            raw_url = m.group(0)
+            trailing = ""
+            # Strip trailing punctuation/markdown markers that shouldn't belong to the URL
+            while raw_url and raw_url[-1] in ".,!?:;*_)~>\"'":
+                if raw_url[-1] == ")" and raw_url.count("(") >= raw_url.count(")"):
+                    break
+                trailing = raw_url[-1] + trailing
+                raw_url = raw_url[:-1]
+
+            if not raw_url:
+                return trailing
+            return f"[{raw_url}]({raw_url}){trailing}"
+
+        processed = re.sub(r'https?://[^\s<>]+', bare_url_repl, processed)
+
+        # Restore protected tokens
+        for i, tok in enumerate(link_tokens):
+            processed = processed.replace(f"\x00LINK_{i}\x00", tok)
+        for i, tok in enumerate(code_tokens):
+            processed = processed.replace(f"\x00CODE_{i}\x00", tok)
+
+        out_lines.append(processed)
+
+    return "\n".join(out_lines)
+
+
+# ---------------------------------------------------------------------------
+#  Front-matter Parser and Automatic Fixer
+# ---------------------------------------------------------------------------
+def fix_and_parse_frontmatter(text, filename=""):
+    """
+    Parse front-matter, automatically fixing missing title and date:
+    - If title is missing or 'Untitled', checks for first '# Heading' or prompts the user.
+    - If date is missing, grabs today's date (YYYY-MM-DD).
+    - Ensures valid YAML front-matter block at the top.
+    Returns (meta_dict, body_markdown, updated_full_text).
+    """
+    today_str = datetime.date.today().strftime("%Y-%m-%d")
+    fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+
+    if not fm_match:
+        # No front-matter block found
         title_match = re.search(r"^#\s+(.+)", text, re.MULTILINE)
-        title = title_match.group(1).strip() if title_match else "Untitled"
-        return {"title": title, "date": "", "description": ""}, text
+        if title_match:
+            title = title_match.group(1).strip()
+        else:
+            try:
+                title = input(f"Enter title for '{filename}': ").strip()
+            except (EOFError, OSError):
+                title = ""
+            if not title:
+                title = os.path.splitext(filename)[0].replace("-", " ").title() or "Untitled"
 
-    raw = match.group(1)
-    body = text[match.end():]
+        meta = {
+            "title": title,
+            "date": today_str,
+            "description": ""
+        }
+        body = text.strip()
+        updated_full_text = f"---\ntitle: {meta['title']}\ndate: {meta['date']}\ndescription: {meta['description']}\n---\n\n{body}\n"
+        return meta, body, updated_full_text
+
+    raw_yaml = fm_match.group(1)
+    body = text[fm_match.end():]
     meta = {}
-    for line in raw.splitlines():
+    lines = raw_yaml.splitlines()
+
+    for line in lines:
         if ":" in line:
-            key, val = line.split(":", 1)
-            meta[key.strip().lower()] = val.strip()
-    meta.setdefault("title", "Untitled")
-    meta.setdefault("date", "")
+            k, v = line.split(":", 1)
+            meta[k.strip().lower()] = v.strip()
+
+    title = meta.get("title", "").strip()
+    if not title or title.lower() == "untitled":
+        title_match = re.search(r"^#\s+(.+)", body, re.MULTILINE)
+        if title_match:
+            title = title_match.group(1).strip()
+        else:
+            try:
+                title = input(f"Enter title for '{filename}': ").strip()
+            except (EOFError, OSError):
+                title = ""
+            if not title:
+                title = os.path.splitext(filename)[0].replace("-", " ").title() or "Untitled"
+        meta["title"] = title
+
+    date = meta.get("date", "").strip()
+    if not date:
+        date = today_str
+        meta["date"] = date
+
     meta.setdefault("description", "")
-    return meta, body
+
+    # Reconstruct front-matter preserving keys
+    new_yaml_lines = []
+    seen_keys = set()
+    for line in lines:
+        if ":" in line:
+            k, _ = line.split(":", 1)
+            k_clean = k.strip().lower()
+            if k_clean in meta:
+                new_yaml_lines.append(f"{k_clean}: {meta[k_clean]}")
+                seen_keys.add(k_clean)
+            else:
+                new_yaml_lines.append(line)
+        else:
+            new_yaml_lines.append(line)
+
+    for required_key in ["title", "date", "description"]:
+        if required_key not in seen_keys:
+            new_yaml_lines.append(f"{required_key}: {meta.get(required_key, '')}")
+
+    updated_full_text = f"---\n{chr(10).join(new_yaml_lines)}\n---\n{body}"
+    return meta, body, updated_full_text
 
 
 # ---------------------------------------------------------------------------
-#  Minimal Markdown → HTML converter  (no dependencies)
+#  Minimal Markdown → HTML converter
 # ---------------------------------------------------------------------------
 def md_to_html(md):
-    """Convert a subset of Markdown to HTML.
-
-    Supported:
-    - Headings (## … ######)
-    - Bold (**text**), italic (*text* / _text_), inline code (`code`)
-    - Images ![alt](src)
-    - Links [text](url)
-    - Unordered lists (- item)
-    - Ordered lists (1. item)
-    - Fenced code blocks (``` ... ```)
-    - Block quotes (> text)
-    - Horizontal rules (--- or ***)
-    - YouTube / Vimeo embeds via bare URLs on their own line
-    - Paragraphs and line breaks
-    """
+    """Convert a subset of Markdown to HTML."""
     lines = md.split("\n")
     out = []
     i = 0
@@ -155,7 +275,7 @@ def md_to_html(md):
             i += 1
             continue
 
-        # Headings
+        # Headings (h2-h6)
         heading_match = re.match(r'^(#{2,6})\s+(.+)', stripped)
         if heading_match:
             close_lists()
@@ -257,7 +377,7 @@ def md_to_html(md):
 
 
 # ---------------------------------------------------------------------------
-#  Slug generator
+#  Slug Generator
 # ---------------------------------------------------------------------------
 def slugify(title):
     """Turn a title into a filename-safe slug."""
@@ -265,55 +385,67 @@ def slugify(title):
     slug = re.sub(r'[^\w\s-]', '', slug)
     slug = re.sub(r'[\s_]+', '-', slug)
     slug = re.sub(r'-+', '-', slug).strip('-')
-    return slug
+    return slug or "post"
 
 
 # ---------------------------------------------------------------------------
-#  Build a single post
+#  Sorting posts by date
 # ---------------------------------------------------------------------------
-def build_post(md_path, template):
-    """Convert a .md file to .html, return metadata dict or None on error."""
-    with open(md_path, "r", encoding="utf-8") as f:
-        raw = f.read()
+def post_sort_key(p):
+    """Sort newest dates first, placing non-standard dates appropriately."""
+    d = p.get("date", "")
+    if re.match(r'^\d{4}-\d{2}-\d{2}', d):
+        return (1, d)
+    if d:
+        return (0, d)
+    return (-1, "")
 
-    meta, body = parse_frontmatter(raw)
-    content_html = md_to_html(body)
-    slug = slugify(meta["title"])
-    html_filename = slug + ".html"
-    html_path = os.path.join(POSTS_DIR, html_filename)
+
+# ---------------------------------------------------------------------------
+#  Build post pages with sidebar tree
+# ---------------------------------------------------------------------------
+def render_post_html(meta, content_html, sorted_posts, template):
+    """Render a post with its own sidebar tree where the current post is highlighted."""
+    sidebar_lines = []
+    for item in sorted_posts:
+        date_str = f'<span class="blog-tree-date">{html_module.escape(item["date"])}</span> ' if item["date"] else ""
+        title_esc = html_module.escape(item["title"])
+        if item.get("slug") == meta.get("slug"):
+            # Current post highlighted
+            sidebar_lines.append(
+                f'\t\t\t\t<li class="blog-tree-item blog-tree-item-current">'
+                f'<span class="font1 blog-tree-current">{date_str}{title_esc}</span></li>'
+            )
+        else:
+            # Other posts clickable
+            sidebar_lines.append(
+                f'\t\t\t\t<li class="blog-tree-item">'
+                f'<a class="font1 blog-tree-link" href="{item["html_filename"]}">'
+                f'{date_str}{title_esc}</a></li>'
+            )
+
+    sidebar_posts_html = "\n".join(sidebar_lines)
 
     rendered = template
     rendered = rendered.replace("{{TITLE}}", html_module.escape(meta["title"]))
     rendered = rendered.replace("{{DATE}}", html_module.escape(meta["date"]))
-    rendered = rendered.replace("{{META_DESCRIPTION}}", html_module.escape(meta["description"]))
+    rendered = rendered.replace("{{META_DESCRIPTION}}", html_module.escape(meta.get("description", "")))
     rendered = rendered.replace("{{CONTENT}}", content_html)
-
-    with open(html_path, "w", encoding="utf-8") as f:
-        f.write(rendered)
-
-    print(f"  Built: {html_filename}")
-    meta["slug"] = slug
-    meta["html_filename"] = html_filename
-    return meta
+    rendered = rendered.replace("{{SIDEBAR_POSTS}}", sidebar_posts_html)
+    return rendered
 
 
 # ---------------------------------------------------------------------------
 #  Update index.html
 # ---------------------------------------------------------------------------
-def update_index(posts_meta):
+def update_index(sorted_posts):
     """Rewrite the blog tree in index.html."""
     with open(INDEX_PATH, "r", encoding="utf-8") as f:
         index_html = f.read()
 
-    if not posts_meta:
+    if not sorted_posts:
         tree_items = '\t\t\t\t<li class="blog-tree-empty font1">No posts yet — check back soon!</li>\n'
     else:
-        # Sort by date, newest first
-        sorted_posts = sorted(
-            posts_meta,
-            key=lambda p: p.get("date", ""),
-            reverse=True
-        )
         tree_lines = []
         for p in sorted_posts:
             date_str = f'<span class="blog-tree-date">{html_module.escape(p["date"])}</span> ' if p["date"] else ""
@@ -331,11 +463,11 @@ def update_index(posts_meta):
     with open(INDEX_PATH, "w", encoding="utf-8") as f:
         f.write(index_html)
 
-    print(f"  Index updated with {len(posts_meta)} post(s).")
+    print(f"  Index updated with {len(sorted_posts)} post(s).")
 
 
 # ---------------------------------------------------------------------------
-#  Main
+#  Main build routine
 # ---------------------------------------------------------------------------
 def main():
     if "--new" in sys.argv:
@@ -343,18 +475,12 @@ def main():
         os.startfile(POSTS_DIR)
         return
 
-    # Ensure posts dir exists
     os.makedirs(POSTS_DIR, exist_ok=True)
 
-    # Read template
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         template = f.read()
 
-    # Find all .md files
-    md_files = sorted([
-        f for f in os.listdir(POSTS_DIR) if f.endswith(".md")
-    ])
-
+    md_files = sorted([f for f in os.listdir(POSTS_DIR) if f.endswith(".md")])
     if not md_files:
         print("No .md files found in posts/. Add markdown files and run again.")
         update_index([])
@@ -362,15 +488,68 @@ def main():
 
     print(f"Found {len(md_files)} markdown file(s).\n")
 
-    all_meta = []
+    posts_data = []
+    new_html_files = []
+
+    # Step 1: Read, update links, fix title/date, prepare content
     for md_file in md_files:
         md_path = os.path.join(POSTS_DIR, md_file)
-        meta = build_post(md_path, template)
-        if meta:
-            all_meta.append(meta)
+        with open(md_path, "r", encoding="utf-8") as f:
+            raw_text = f.read()
 
+        # Update links inside markdown to correct syntax
+        text_with_fixed_links = update_markdown_links(raw_text)
+
+        # Fix title and date section
+        meta, body, updated_text = fix_and_parse_frontmatter(text_with_fixed_links, filename=md_file)
+
+        # Write back if file was updated
+        if updated_text != raw_text:
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(updated_text)
+            print(f"  Updated markdown: {md_file} (fixed syntax/meta)")
+
+        slug = slugify(meta["title"])
+        html_filename = slug + ".html"
+        html_path = os.path.join(POSTS_DIR, html_filename)
+
+        # Track if this HTML post is newly created
+        if not os.path.exists(html_path):
+            new_html_files.append(html_path)
+
+        meta["slug"] = slug
+        meta["html_filename"] = html_filename
+        meta["html_path"] = html_path
+        meta["body"] = body
+
+        posts_data.append(meta)
+
+    # Sort posts newest first
+    sorted_posts = sorted(posts_data, key=post_sort_key, reverse=True)
+
+    # Step 2: Build HTML for each post
+    for p in sorted_posts:
+        content_html = md_to_html(p["body"])
+        rendered = render_post_html(p, content_html, sorted_posts, template)
+
+        with open(p["html_path"], "w", encoding="utf-8") as f:
+            f.write(rendered)
+        print(f"  Built: {p['html_filename']}")
+
+    # Step 3: Update index.html
     print()
-    update_index(all_meta)
+    update_index(sorted_posts)
+
+    # Step 4: Write build metadata for batch deployment script
+    # Line 1: Blog post title (for git commit message)
+    # Line 2+: Newly created html files
+    latest_title = sorted_posts[0]["title"] if sorted_posts else "Update blog"
+    with open(BUILD_INFO_PATH, "w", encoding="utf-8") as f:
+        f.write(latest_title + "\n")
+        for nf in new_html_files:
+            rel_nf = os.path.relpath(nf, SCRIPT_DIR).replace("\\", "/")
+            f.write(rel_nf + "\n")
+
     print("\nDone!")
 
 

@@ -94,7 +94,6 @@ a {
 	letter-spacing: 3px;
 }
 
-
 /* ============================================================
    Background
    ============================================================ */
@@ -179,10 +178,6 @@ a {
 	letter-spacing: 1.5px;
 }
 
-
-
-
-
 /* ============================================================
    Testimonials
    ============================================================ */
@@ -239,8 +234,8 @@ a {
    Blog — Index
    ============================================================ */
 .blog-index {
-	max-width: 700px;
-	margin: 6vw auto 4vw auto;
+	max-width: 850px;
+	margin: 5.5rem auto 4rem auto;
 	padding: 0 5%;
 }
 
@@ -269,6 +264,7 @@ a {
 .blog-tree-item {
 	padding: 0.6em 0;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	overflow-wrap: break-word;
 }
 
 .blog-tree-link {
@@ -295,12 +291,64 @@ a {
 }
 
 /* ============================================================
+   Blog — Layout & Sidebar (Post Pages)
+   ============================================================ */
+.blog-layout {
+	max-width: 1450px;
+	margin: 0;
+	padding: 25px 3rem 4rem 40px;
+	display: flex;
+	gap: 3.5rem;
+	align-items: flex-start;
+	box-sizing: border-box;
+}
+
+.blog-sidebar {
+	flex: 0 0 280px;
+	position: sticky;
+	top: 25px;
+	max-height: calc(100vh - 50px);
+	overflow-y: auto;
+	padding-right: 0.5rem;
+}
+
+.blog-sidebar #logo {
+	position: static;
+	display: inline-block;
+	margin: 0 0 1.5rem 0;
+}
+
+.blog-sidebar .blog-subheading {
+	margin-top: 0;
+	font-size: 1.15rem;
+}
+
+.blog-tree-item-current {
+	border-left: 3px solid var(--color-accent-gold);
+	padding-left: 0.6em;
+	margin-left: -0.6em;
+}
+
+.blog-tree-current {
+	font-size: 1rem !important;
+	color: var(--color-accent-gold) !important;
+	font-weight: bold;
+	display: inline-block;
+}
+
+.blog-tree-current .blog-tree-date {
+	color: var(--color-accent-gold);
+}
+
+/* ============================================================
    Blog — Post Article
    ============================================================ */
 .blog-post {
-	max-width: 700px;
-	margin: 6vw auto 4vw auto;
-	padding: 0 5%;
+	flex: 1;
+	min-width: 0;
+	max-width: 950px;
+	margin: 0;
+	padding: 0;
 }
 
 .blog-date {
@@ -316,6 +364,7 @@ a {
 	margin: 0 0 1.5em 0;
 	border-bottom: 1px solid var(--color-accent);
 	padding-bottom: 0.3em;
+	overflow-wrap: break-word;
 }
 
 .blog-body {
@@ -477,22 +526,29 @@ a {
 		color: var(--color-accent);
 	}
 
-	/* --- Logo (site title) --- */
+	/* --- Logo / Top Left Nav Button --- */
 	#logo {
-		font-size: 2.3vw;
-		display: inline;
+		font-size: clamp(14px, 1.2vw, 18px);
+		display: inline-block;
 		border-style: var(--border-double);
 		border-width: var(--border-thin);
+		border-color: var(--color-text);
 		text-align: left;
-		margin: 30px 20px 20px 60px;
+		margin: 25px 20px 20px 40px;
 		box-sizing: border-box;
 		position: fixed;
-		padding: 5px 10px;
+		top: 0;
+		left: 0;
+		padding: 6px 14px;
 		z-index: var(--z-nav);
+		background: rgba(33, 33, 33, 0.85);
+		backdrop-filter: blur(4px);
+		transition: color 0.2s, border-color 0.2s;
 	}
 
 	#logo:hover {
-		color: var(--color-accent);
+		color: var(--color-accent-gold);
+		border-color: var(--color-accent-gold);
 	}
 
 	/* --- Contact --- */
@@ -510,7 +566,6 @@ a {
 	}
 
 	/* --- Bio --- */
-
 	#biodesc {
 		font-size: 1.5vw;
 		margin: 3% 30% 0% 5%;
@@ -540,8 +595,6 @@ a {
 		margin: 0.9vw 10% 5% 20%;
 	}
 
-
-
 	/* --- Testimonials (Desktop) --- */
 	.testimonial-quote {
 		font-size: 0.72vw;
@@ -550,8 +603,6 @@ a {
 	.testimonial-author {
 		font-size: 0.72vw;
 	}
-
-
 
 	/* --- Demoreel --- */
 	#demoreel-section {
@@ -605,9 +656,6 @@ a {
 		display: block;
 	}
 
-
-
-
 	/* --- More Projects / Old Projects Links --- */
 	#moreprojects {
 		font-size: 2vw;
@@ -622,25 +670,50 @@ a {
 		color: var(--color-accent);
 	}
 
-
-
 	#backToPortfolio {
 		display: none;
 	}
 }
 
 /* ============================================================
-   TABLET BREAKPOINT — Logo hide (max-width: 1300px)
+   RESPONSIVE LAYOUT (max-width: 950px)
    ============================================================ */
-@media only screen and (max-width: 1300px) {
-
-	#logo {
-		display: none;
+@media only screen and (max-width: 950px) {
+	.blog-layout {
+		flex-direction: column;
+		margin: 1.5rem auto;
+		padding: 0 1.5rem;
+		gap: 2rem;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
+	.blog-post {
+		order: 1;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		box-sizing: border-box;
+	}
 
+	.blog-sidebar {
+		position: static;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		max-height: none;
+		order: 2;
+		padding-right: 0;
+		box-sizing: border-box;
+	}
 
+	.blog-sidebar #logo {
+		margin-bottom: 1rem;
+	}
 
+	.blog-sidebar .blog-tree-item-current {
+		margin-left: 0;
+	}
 }
 
 /* ============================================================
@@ -656,8 +729,15 @@ a {
 		background-attachment: scroll;
 	}
 
+	/* Keep nav button visible on mobile */
 	#logo {
-		display: none;
+		position: static;
+		display: inline-block;
+		margin: 15px 0 10px 15px;
+		font-size: 14px;
+		border-style: var(--border-double);
+		border-width: var(--border-thin);
+		padding: 5px 10px;
 	}
 
 	/* --- Navigation --- */
@@ -691,8 +771,6 @@ a {
 		border: var(--border-solid) var(--border-thin);
 		color: var(--color-accent);
 	}
-
-
 
 	/* --- Contact --- */
 	#contact-section {
@@ -729,8 +807,6 @@ a {
 	}
 
 	/* --- Bio --- */
-
-
 	.profilepic {
 		width: 30vw;
 		height: 30vw;
@@ -739,8 +815,6 @@ a {
 		display: block;
 		margin: 9.25vw auto 2vw auto;
 	}
-
-
 
 	#biodesc {
 		font-size: calc(110% * 0.7) !important;
@@ -764,10 +838,6 @@ a {
 		text-align: right;
 		margin: 1px 5%;
 	}
-
-
-
-
 
 	/* --- Testimonials (Mobile) --- */
 	#testimonials-section {
@@ -840,7 +910,6 @@ a {
 		font-weight: 300;
 	}
 
-
 	/* --- More Projects / Old Projects Links --- */
 	#moreprojects {
 		font-size: 8vw;
@@ -854,8 +923,6 @@ a {
 	#moreprojects:hover {
 		color: var(--color-accent);
 	}
-
-
 
 	#backToPortfolio {
 		font-size: 8vw;

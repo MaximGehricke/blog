@@ -3,8 +3,6 @@ title: How I got my Global Talent Visa as a VFX Artist
 date: 2026-10-28
 description: The very first blog post — testing the new blog platform.
 ---
-
-
 # How I got my Global Talent Visa as a VFX Artist
 
 It was early 2026.
@@ -32,7 +30,7 @@ The first pitfall to know about if you're in vfx or animation or similar media f
 The reason for that is that the Arts Council doesn't actually do jack shit, they pass the application along to **PACT - the "Producers Alliance for Cinema and Television"**.
 And PACT only ever evaluates exceptional talent endorsement, never exceptional promise.
 
-This page on their website has the best information on eligibility https://www.pact.co.uk/applying-for-talent-visas.html
+This page on their website has the best information on eligibility [https://www.pact.co.uk/applying-for-talent-visas.html](https://www.pact.co.uk/applying-for-talent-visas.html)
 Go to the endorsement criteria tab on that page, it's got loads of useful information.
 
 You can get a free consultation with an immigration lawyer to check what your chances of acceptance might be.
@@ -43,7 +41,7 @@ I had two free video meetings with law firms I found here:
 [Find legal advice and information: Find a legal adviser - GOV.UK](https://www.gov.uk/find-legal-advice/find-legal-adviser)
 
 
-**I have uploaded my entire submission with all documents here: https://drive.google.com/drive/folders/1oQWRnewUzSaxjvPklk3Y_pXUHhwr_Fwc?usp=sharing**
+**I have uploaded my entire submission with all documents here: [https://drive.google.com/drive/folders/1oQWRnewUzSaxjvPklk3Y_pXUHhwr_Fwc?usp=sharing](https://drive.google.com/drive/folders/1oQWRnewUzSaxjvPklk3Y_pXUHhwr_Fwc?usp=sharing)**
 I censored all names and identifying information because I don't want weirdos from around the world to bug people that I know...
 
 I used the "something I worked on has been nominated for a significant price" angle - but there is multiple ways to get this visa. I obviously can't tell you much about the other options...
