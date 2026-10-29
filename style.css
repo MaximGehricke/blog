@@ -1,0 +1,873 @@
+@charset "utf-8";
+
+/* ============================================================
+   CSS Custom Properties (Design Tokens)
+   ============================================================ */
+:root {
+	/* Colors */
+	--color-bg: #212121;
+	--color-text: whitesmoke;
+	--color-text-alt: aliceblue;
+	--color-accent: darkgoldenrod;
+	--color-accent-gold: goldenrod;
+	--color-footer-bg: rgba(30, 30, 30, 0.8);
+	--color-overlay: rgba(0, 0, 0, 0.3);
+	--color-active-link: transparent;
+	--color-active-link-shadow: rgba(255, 255, 255, 1);
+
+	/* Fonts */
+	--font-primary: "Lato", sans-serif;
+	--font-secondary: "Lato", sans-serif;
+	--font-italic: "italic", sans-serif;
+
+	/* Font Sizes */
+	--text-sm: 15px;
+	--text-base: 27px;
+	--text-md: 16px;
+
+	/* Spacing */
+	--spacing-xs: 0.5vw;
+	--spacing-sm: 1vw;
+	--spacing-md: 2vw;
+	--spacing-lg: 5vw;
+	--spacing-xl: 10vw;
+
+	/* Borders */
+	--border-double: double;
+	--border-solid: solid;
+	--border-thin: thin;
+
+	/* Z-index layers */
+	--z-nav: 100;
+	--z-overlay: 20;
+	--z-behind: -1;
+}
+
+/* ============================================================
+   Font Faces
+   ============================================================ */
+@font-face {
+	font-family: "sourcepro";
+	src: url(fonts/source_sans_pro/sourcesanspro-extralight.ttf);
+}
+
+@font-face {
+	font-family: "Lato";
+	src: url(fonts/lato/lato-light.ttf);
+}
+
+@font-face {
+	font-family: "italic";
+	src: url(fonts/open_sans/opensans-lightitalic.ttf);
+}
+
+/* ============================================================
+   Base / Reset
+   ============================================================ */
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+a {
+	text-decoration: none;
+}
+
+/* ============================================================
+   Typography Classes
+   ============================================================ */
+.font1 {
+	font-family: var(--font-primary);
+	font-size: var(--text-base);
+	text-decoration: none;
+	color: var(--color-text);
+}
+
+.font2 {
+	font-family: var(--font-secondary);
+	font-size: var(--text-base);
+	text-decoration: none;
+	color: var(--color-text);
+	letter-spacing: 3px;
+}
+
+
+/* ============================================================
+   Background
+   ============================================================ */
+.bg {
+	background-color: var(--color-bg);
+	background-image: url("images/background_img.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+/* ============================================================
+   Social Media Logos (Contact page)
+   ============================================================ */
+.logo {
+	margin: 1.8vw;
+	filter: grayscale(100%) brightness(1.5);
+	width: 3.5vw;
+	height: 3.5vw;
+}
+
+.logo:hover {
+	filter: grayscale(0%) brightness(1);
+}
+
+.social-links {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: var(--spacing-lg);
+	margin: var(--spacing-md) 0;
+}
+
+.social-links a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+#footer {
+	height: 40px;
+	background: var(--color-footer-bg);
+	margin-top: auto;
+	width: 100%;
+	position: relative;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#footertext {
+	font-size: var(--text-sm);
+	text-decoration: none;
+	text-align: center;
+	letter-spacing: 1px;
+}
+
+/* ============================================================
+   Portfolio Grid Item Label
+   ============================================================ */
+.portfolio-item {
+	margin: 8px;
+}
+
+.portfolio-item-label {
+	font-size: var(--text-md);
+	text-align: center;
+	letter-spacing: 1.5px;
+}
+
+/* ============================================================
+   Section Heading (DEMOREEL, MORE OF MY WORK, etc.)
+   ============================================================ */
+.section-heading {
+	text-align: center;
+	font-weight: bold;
+	padding-top: 1.5vw;
+	letter-spacing: 1.5px;
+}
+
+
+
+
+
+/* ============================================================
+   Testimonials
+   ============================================================ */
+#bio-section {
+	margin-top: 1.5rem;
+}
+
+#testimonials-section {
+	margin-top: 2%;
+	padding: 0;
+	overflow: hidden;
+	--fade-left: transparent;
+	--fade-right: transparent;
+	mask-image: linear-gradient(to right, var(--fade-left), black 10vw, black calc(100% - 10vw), var(--fade-right));
+	-webkit-mask-image: linear-gradient(to right, var(--fade-left), black 10vw, black calc(100% - 10vw), var(--fade-right));
+}
+
+.testimonials-grid {
+	display: flex;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.testimonials-grid::-webkit-scrollbar {
+	display: none;
+}
+
+.testimonial-card {
+	min-width: calc(100% / 4);
+	max-width: calc(100% / 4);
+	box-sizing: border-box;
+	flex-shrink: 0;
+	text-align: center;
+	padding: 1.5vw 2.5vw;
+}
+
+.testimonial-quote {
+	font-family: var(--font-italic);
+	color: var(--color-text);
+	line-height: 1.6;
+	margin: 0 0 0.8em 0;
+}
+
+.testimonial-author {
+	font-family: var(--font-primary);
+	color: var(--color-text);
+	font-weight: bold;
+	margin: 0;
+}
+
+/* ============================================================
+   Blog — Index
+   ============================================================ */
+.blog-index {
+	max-width: 700px;
+	margin: 6vw auto 4vw auto;
+	padding: 0 5%;
+}
+
+.blog-intro {
+	font-size: 1rem;
+	line-height: 1.8;
+	color: var(--color-text-alt);
+	margin: 2vw 0 3vw 0;
+	text-align: center;
+}
+
+.blog-subheading {
+	font-size: 1.2rem;
+	letter-spacing: 1.5px;
+	margin: 2vw 0 1vw 0;
+	border-bottom: 1px solid var(--color-accent);
+	padding-bottom: 0.4em;
+}
+
+.blog-tree {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.blog-tree-item {
+	padding: 0.6em 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.blog-tree-link {
+	font-size: 1rem !important;
+	color: var(--color-text) !important;
+	transition: color 0.2s;
+}
+
+.blog-tree-link:hover {
+	color: var(--color-accent-gold) !important;
+}
+
+.blog-tree-date {
+	font-family: var(--font-italic);
+	color: var(--color-accent);
+	margin-right: 0.6em;
+	font-size: 0.85em;
+}
+
+.blog-tree-empty {
+	font-size: 1rem !important;
+	color: rgba(245, 245, 245, 0.5);
+	padding: 1em 0;
+}
+
+/* ============================================================
+   Blog — Post Article
+   ============================================================ */
+.blog-post {
+	max-width: 700px;
+	margin: 6vw auto 4vw auto;
+	padding: 0 5%;
+}
+
+.blog-date {
+	font-family: var(--font-italic);
+	font-size: 0.9rem !important;
+	color: var(--color-accent);
+	margin: 0 0 0.2em 0;
+}
+
+.blog-title {
+	font-size: 2.4rem !important;
+	letter-spacing: 1px;
+	margin: 0 0 1.5em 0;
+	border-bottom: 1px solid var(--color-accent);
+	padding-bottom: 0.3em;
+}
+
+.blog-body {
+	font-size: 1rem !important;
+	line-height: 1.85;
+	color: var(--color-text-alt);
+}
+
+.blog-body h2 {
+	font-family: var(--font-primary);
+	font-size: 1.5rem;
+	color: var(--color-text);
+	margin: 2em 0 0.6em 0;
+	letter-spacing: 1px;
+}
+
+.blog-body h3 {
+	font-family: var(--font-primary);
+	font-size: 1.2rem;
+	color: var(--color-text);
+	margin: 1.8em 0 0.5em 0;
+}
+
+.blog-body h4,
+.blog-body h5,
+.blog-body h6 {
+	font-family: var(--font-primary);
+	font-size: 1rem;
+	color: var(--color-text);
+	margin: 1.5em 0 0.4em 0;
+}
+
+.blog-body p {
+	margin: 0 0 1.2em 0;
+}
+
+.blog-body a {
+	color: var(--color-accent-gold);
+	text-decoration: underline;
+	text-decoration-color: rgba(218, 165, 32, 0.3);
+	text-underline-offset: 3px;
+	transition: text-decoration-color 0.2s;
+}
+
+.blog-body a:hover {
+	text-decoration-color: var(--color-accent-gold);
+}
+
+.blog-body strong {
+	color: var(--color-text);
+}
+
+.blog-body em {
+	font-family: var(--font-italic);
+}
+
+.blog-body ul,
+.blog-body ol {
+	padding-left: 1.4em;
+	margin: 0 0 1.2em 0;
+}
+
+.blog-body li {
+	margin-bottom: 0.4em;
+}
+
+.blog-body hr {
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	margin: 2em 0;
+}
+
+.blog-body blockquote {
+	border-left: 3px solid var(--color-accent);
+	margin: 1.5em 0;
+	padding: 0.5em 1.2em;
+	background: rgba(0, 0, 0, 0.2);
+	border-radius: 0 4px 4px 0;
+}
+
+.blog-body blockquote p {
+	margin: 0.4em 0;
+}
+
+.blog-body pre {
+	background: rgba(0, 0, 0, 0.4);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 6px;
+	padding: 1em 1.2em;
+	overflow-x: auto;
+	margin: 1.2em 0;
+	font-size: 0.88rem;
+	line-height: 1.5;
+}
+
+.blog-body code {
+	font-family: "Consolas", "Monaco", "Courier New", monospace;
+	font-size: 0.88em;
+}
+
+.blog-body p code {
+	background: rgba(0, 0, 0, 0.35);
+	padding: 0.15em 0.4em;
+	border-radius: 3px;
+}
+
+.blog-img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 1.5em auto;
+	border-radius: 4px;
+}
+
+.blog-video {
+	position: relative;
+	padding-top: 56.25%;
+	margin: 1.5em 0;
+	overflow: hidden;
+	border-radius: 4px;
+}
+
+.blog-video iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* ============================================================
+   DESKTOP LAYOUT (min-width: 670px)
+   ============================================================ */
+@media only screen and (min-width: 670px) {
+
+	/* --- Navigation --- */
+	#menunav {
+		margin: 0 auto;
+		display: flex;
+		justify-content: center;
+		padding-top: var(--spacing-md);
+		padding-right: var(--spacing-sm);
+	}
+
+	#menuul {
+		list-style-type: none;
+		display: flex;
+		gap: 40px;
+		z-index: var(--z-nav);
+		padding: 0;
+		margin: 0;
+	}
+
+	#menuul a {
+		text-decoration: none;
+	}
+
+	li a:hover {
+		color: var(--color-accent);
+	}
+
+	/* --- Logo (site title) --- */
+	#logo {
+		font-size: 2.3vw;
+		display: inline;
+		border-style: var(--border-double);
+		border-width: var(--border-thin);
+		text-align: left;
+		margin: 30px 20px 20px 60px;
+		box-sizing: border-box;
+		position: fixed;
+		padding: 5px 10px;
+		z-index: var(--z-nav);
+	}
+
+	#logo:hover {
+		color: var(--color-accent);
+	}
+
+	/* --- Contact --- */
+	#contact {
+		font-size: 2vw;
+		display: block;
+		border-style: var(--border-double);
+		border-width: var(--border-thin);
+		width: 50vw;
+		text-align: center;
+		margin: 10% auto 3% auto;
+		padding: 2%;
+		box-sizing: border-box;
+		color: var(--color-accent);
+	}
+
+	/* --- Bio --- */
+
+	#biodesc {
+		font-size: 1.5vw;
+		margin: 3% 30% 0% 5%;
+	}
+
+	#bioname {
+		font-size: 5vw;
+		text-align: left;
+		margin: 3.7vw 30% 0.5% 5%;
+		border-bottom-style: var(--border-double);
+		border-bottom-color: var(--color-text);
+		letter-spacing: 1.5px;
+	}
+
+	#bioprofession {
+		font-size: 2vw;
+		text-transform: uppercase;
+		text-align: left;
+		margin: 1px 5% 1px 5%;
+	}
+
+	.profilepic {
+		width: 12vw;
+		height: 12vw;
+		border-radius: 50%;
+		float: right;
+		margin: 0.9vw 10% 5% 20%;
+	}
+
+
+
+	/* --- Testimonials (Desktop) --- */
+	.testimonial-quote {
+		font-size: 0.72vw;
+	}
+
+	.testimonial-author {
+		font-size: 0.72vw;
+	}
+
+
+
+	/* --- Demoreel --- */
+	#demoreel-section {
+		margin-top: 4vw;
+	}
+
+	#demoreel-section .section-heading {
+		padding-top: 3vw;
+	}
+
+	#demoreel {
+		margin: 1% 25% 0 25%;
+		align-content: center;
+		position: relative;
+		padding-top: 28.125%;
+	}
+
+	.reelvideo {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	/* --- Portfolio Grid (replaces table) --- */
+	#portfoliotable,
+	.portfolio-grid {
+		margin: var(--spacing-sm) auto;
+		padding: 0 var(--spacing-xl);
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0;
+	}
+
+	.portfolio-item {
+		padding: 0;
+		margin: 8px;
+	}
+
+	.portfolioelement {
+		width: 100%;
+		height: auto;
+		margin: 0;
+		object-position: center;
+	}
+
+	.portfolioelement img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+
+
+
+	/* --- More Projects / Old Projects Links --- */
+	#moreprojects {
+		font-size: 2vw;
+		text-align: center;
+		border-style: var(--border-solid);
+		border-width: var(--border-thin);
+		margin: var(--spacing-lg) 40vw;
+		padding: var(--spacing-sm);
+	}
+
+	#moreprojects:hover {
+		color: var(--color-accent);
+	}
+
+
+
+	#backToPortfolio {
+		display: none;
+	}
+}
+
+/* ============================================================
+   TABLET BREAKPOINT — Logo hide (max-width: 1300px)
+   ============================================================ */
+@media only screen and (max-width: 1300px) {
+
+	#logo {
+		display: none;
+	}
+
+
+
+
+}
+
+/* ============================================================
+   MOBILE LAYOUT (max-width: 670px)
+   ============================================================ */
+@media only screen and (max-width: 670px) {
+
+	.bg {
+		background-color: var(--color-bg);
+		background-image: url("images/background_img.jpg");
+		background-position: 50% 0%;
+		background-size: auto;
+		background-attachment: scroll;
+	}
+
+	#logo {
+		display: none;
+	}
+
+	/* --- Navigation --- */
+	#menunav {
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+		padding-top: calc(var(--spacing-md) * 2);
+	}
+
+	#menuul {
+		list-style-type: none;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 15px;
+		margin: 0 auto;
+		padding: 0;
+	}
+
+	#menuul a {
+		font-size: calc(var(--text-base) * 0.8);
+	}
+
+	li {
+		background-color: rgba(0, 0, 0, 0);
+		text-align: center;
+	}
+
+	li:hover {
+		border: var(--border-solid) var(--border-thin);
+		color: var(--color-accent);
+	}
+
+
+
+	/* --- Contact --- */
+	#contact-section {
+		min-height: calc(75vh - 60px);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 4vw 0;
+		box-sizing: border-box;
+	}
+
+	#contact {
+		font-size: 5vw;
+		border-style: var(--border-double);
+		border-width: var(--border-thin);
+		width: 90vw;
+		text-align: center;
+		margin: 0 auto 5vw auto;
+		padding: 4% 2%;
+		box-sizing: border-box;
+		color: var(--color-accent);
+	}
+
+	.logo {
+		margin: 1.2vw;
+		filter: grayscale(100%) brightness(1.5);
+		width: 14vw;
+		height: 14vw;
+	}
+
+	.logo:hover {
+		filter: grayscale(0%) brightness(1);
+	}
+
+	/* --- Bio --- */
+
+
+	.profilepic {
+		width: 30vw;
+		height: 30vw;
+		border-radius: 50%;
+		float: none;
+		display: block;
+		margin: 9.25vw auto 2vw auto;
+	}
+
+
+
+	#biodesc {
+		font-size: calc(110% * 0.7) !important;
+		text-align: left;
+		margin: 10% 5%;
+	}
+
+	#bioname {
+		font-size: 13vw;
+		text-align: right;
+		margin: 2% 5% 0.5% 5%;
+		border-bottom-style: var(--border-double);
+		border-bottom-color: var(--color-text);
+		letter-spacing: 1.5px;
+		clear: both;
+	}
+
+	#bioprofession {
+		font-size: 5vw;
+		text-transform: uppercase;
+		text-align: right;
+		margin: 1px 5%;
+	}
+
+
+
+
+
+	/* --- Testimonials (Mobile) --- */
+	#testimonials-section {
+		margin-top: 15vw;
+		padding: 0;
+	}
+
+	.testimonial-card {
+		min-width: 100%;
+		max-width: 100%;
+		padding: 4vw 6vw;
+	}
+
+	.testimonial-quote {
+		font-size: 3.5vw;
+	}
+
+	.testimonial-author {
+		font-size: 3.5vw;
+	}
+
+	/* --- Demoreel --- */
+	#demoreel-section {
+		margin-top: 10vw;
+	}
+
+	#demoreel-section .section-heading {
+		padding-top: 4vw;
+	}
+
+	#demoreel {
+		margin: 0 auto;
+		width: 95%;
+		align-content: center;
+		position: relative;
+	}
+
+	.reelvideo {
+		width: 100%;
+	}
+
+	/* --- Portfolio Grid (single column on mobile) --- */
+	#portfoliotable,
+	.portfolio-grid {
+		margin: 20vw var(--spacing-sm);
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+
+	.portfolioelement {
+		width: 100%;
+		height: auto;
+		object-position: center;
+	}
+
+	.portfolioelement img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.section-heading {
+		font-size: calc(var(--text-base) * 0.7);
+		font-weight: 300;
+	}
+
+	.portfolio-item-label {
+		font-size: 12px !important;
+		font-weight: 300;
+	}
+
+
+	/* --- More Projects / Old Projects Links --- */
+	#moreprojects {
+		font-size: 8vw;
+		text-align: center;
+		border-style: var(--border-solid);
+		border-width: var(--border-thin);
+		margin: 2vw 10vw;
+		padding: 2vw 0;
+	}
+
+	#moreprojects:hover {
+		color: var(--color-accent);
+	}
+
+
+
+	#backToPortfolio {
+		font-size: 8vw;
+		text-align: center;
+		border-style: var(--border-solid);
+		border-width: var(--border-thin);
+		margin: 2vw 10vw;
+		padding: 2vw 0;
+		display: block;
+	}
+
+	.social-links {
+		gap: 2vw;
+	}
+}

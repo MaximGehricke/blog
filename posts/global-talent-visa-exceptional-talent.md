@@ -1,0 +1,74 @@
+---
+title: How I got my Global Talent Visa as a VFX Artist
+date: 2026-10-28
+description: The very first blog post — testing the new blog platform.
+---
+
+
+# How I got my Global Talent Visa as a VFX Artist
+
+It was early 2026.
+The vfx industry was in dire state. Nobody was getting raises and in fact, inflation had eroded my salary down to below junior-level. A particularly disorganized project made it feel like summer just skipped past me, and I was getting tired and burned out.
+
+**The worst part was, I couldn't even quit.**
+
+Without another role in sight, I would lose my Skilled Worker Visa and almost 4 years of ILR progress if I took a break. Another role was impossible to find, because no studios were doing visa sponsorships anymore. I had to find a way out.
+
+This is the story of how I applied for the Global Talent Visa under the exceptional talent route and finally became a free elf.
+
+![DobbyIsFree](https://ia600802.us.archive.org/30/items/5c-063816ee-2818cb-51bd-92634c-981e-47/5c063816ee2818cb51bd92634c981e47.gif)
+
+A friend of mine had done her application shortly prior and was nice enough to pass me all of her submitted documents.
+I used them as a reference, nay blueprint for my application. I'm writing this to pass along the favour to anonymous internet strangers. Take this as a guide from someone completely unqualified to give legal advice, but happy to share their journey.
+Oh yeah and this was hand typed. Just so you know.        >-🤖🔫
+
+There is two stages to such an application, if you haven't won some very specific qualifying prices (in which case stage 1 can be skipped).
+Stage 1 is an endorsement. The Arts Council handles those for us creatives.
+Stage 2 then is the actual formal application, in which you send all the usual visa information ("Are you a Terrorist?") and your successful endorsement to the Home Office. If you've had a visa before, that stage is a formality - they just check the basics as with any visa application of any kind.
+
+**But the endorsement is the hard part.**
+
+The first pitfall to know about if you're in vfx or animation or similar media fields, is that the Potential Leader route (so called "Exceptional Promise") is unavailable to you.
+The reason for that is that the Arts Council doesn't actually do jack shit, they pass the application along to **PACT - the "Producers Alliance for Cinema and Television"**.
+And PACT only ever evaluates exceptional talent endorsement, never exceptional promise.
+
+This page on their website has the best information on eligibility https://www.pact.co.uk/applying-for-talent-visas.html
+Go to the endorsement criteria tab on that page, it's got loads of useful information.
+
+You can get a free consultation with an immigration lawyer to check what your chances of acceptance might be.
+I had two free video meetings with law firms I found here:
+
+[Get specialist immigration advice - Citizens Advice](https://www.citizensadvice.org.uk/immigration/get-help/get-immigration-advice/)
+[Find an immigration adviser: Search for an adviser - GOV.UK](https://www.gov.uk/find-an-immigration-adviser)
+[Find legal advice and information: Find a legal adviser - GOV.UK](https://www.gov.uk/find-legal-advice/find-legal-adviser)
+
+
+**I have uploaded my entire submission with all documents here: https://drive.google.com/drive/folders/1oQWRnewUzSaxjvPklk3Y_pXUHhwr_Fwc?usp=sharing**
+I censored all names and identifying information because I don't want weirdos from around the world to bug people that I know...
+
+I used the "something I worked on has been nominated for a significant price" angle - but there is multiple ways to get this visa. I obviously can't tell you much about the other options...
+One more little thing that confused me was that the Website keeps saying "Each document must be no more than 3 sides of A4." This is a very fancy way of saying "maximum 3 pages, we don't read more than that".
+
+The entire process from first submission to Visa approval took less waiting time than I expected.
+I sent my endorsement on the 4th of September, received the endorsement on October 8 and the final visa on the 26th of October.
+So less than 2 months total! And that was even though they sent me an email stating "currently they're extremely busy and it can be up to 12 weeks for the endorsement".
+
+Anyways, I hope this helps you. Please don't ask me any questions because this is literally all I know about the GTV.
+Good luck!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
