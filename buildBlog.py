@@ -243,6 +243,51 @@ def md_to_html(md):
         text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
         return text
 
+    def parse_table_row(line):
+        s = line.strip()
+        if s.startswith("|"):
+            s = s[1:]
+        if s.endswith("|"):
+            s = s[:-1]
+        # Protect pipes inside inline code `...`
+        code_spans = []
+        def code_repl(m):
+            code_spans.append(m.group(0))
+            return f"\x00TBL_CODE_{len(code_spans)-1}\x00"
+
+        masked = re.sub(r'`[^`]+`', code_repl, s)
+        raw_cells = re.split(r'(?<!\\)\|', masked)
+        cells = []
+        for c in raw_cells:
+            cell_str = c.strip().replace(r'\|', '|')
+            for idx, span in enumerate(code_spans):
+                cell_str = cell_str.replace(f"\x00TBL_CODE_{idx}\x00", span)
+            cells.append(cell_str)
+        return cells
+
+    def parse_table_delimiter(line):
+        s = line.strip()
+        if not s or not ("|" in s or re.match(r'^:?-+:?$', s)):
+            return None
+        cells = parse_table_row(s)
+        if not cells:
+            return None
+        alignments = []
+        for c in cells:
+            m = re.match(r'^(:?)(-+)(:?)$', c)
+            if not m:
+                return None
+            left, _, right = m.groups()
+            if left and right:
+                alignments.append("center")
+            elif right:
+                alignments.append("right")
+            elif left:
+                alignments.append("left")
+            else:
+                alignments.append(None)
+        return alignments
+
     while i < len(lines):
         line = lines[i]
 
@@ -289,6 +334,52 @@ def md_to_html(md):
         if re.match(r'^#\s+', stripped):
             i += 1
             continue
+
+        # Tables
+        if "|" in stripped and i + 1 < len(lines):
+            alignments = parse_table_delimiter(lines[i + 1])
+            if alignments is not None:
+                headers = parse_table_row(stripped)
+                if headers:
+                    close_lists()
+                    num_cols = max(len(headers), len(alignments))
+                    align_attrs = []
+                    for a in alignments:
+                        if a:
+                            align_attrs.append(f' style="text-align: {a};"')
+                        else:
+                            align_attrs.append("")
+                    while len(align_attrs) < num_cols:
+                        align_attrs.append("")
+
+                    table_lines = ['<table>', '<thead>', '<tr>']
+                    for col_idx in range(num_cols):
+                        h_text = headers[col_idx] if col_idx < len(headers) else ""
+                        attr = align_attrs[col_idx]
+                        table_lines.append(f'<th{attr}>{inline(h_text)}</th>')
+                    table_lines.append('</tr>')
+                    table_lines.append('</thead>')
+                    table_lines.append('<tbody>')
+
+                    i += 2  # Skip header and delimiter lines
+
+                    while i < len(lines) and lines[i].strip() and "|" in lines[i]:
+                        if parse_table_delimiter(lines[i]) is not None:
+                            i += 1
+                            continue
+                        row_cells = parse_table_row(lines[i])
+                        table_lines.append('<tr>')
+                        for col_idx in range(num_cols):
+                            c_text = row_cells[col_idx] if col_idx < len(row_cells) else ""
+                            attr = align_attrs[col_idx]
+                            table_lines.append(f'<td{attr}>{inline(c_text)}</td>')
+                        table_lines.append('</tr>')
+                        i += 1
+
+                    table_lines.append('</tbody>')
+                    table_lines.append('</table>')
+                    out.append("\n".join(table_lines))
+                    continue
 
         # Video embeds: YouTube
         yt = re.match(r'https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]+)', stripped)
@@ -365,6 +456,8 @@ def md_to_html(md):
             if (s.startswith("#") or s.startswith("```") or s.startswith(">")
                     or re.match(r'^[-*+]\s+', s) or re.match(r'^\d+\.\s+', s)
                     or re.match(r'^(---+|\*\*\*+|___+)\s*$', s)):
+                break
+            if "|" in s and i + 1 < len(lines) and parse_table_delimiter(lines[i + 1]) is not None:
                 break
             para_lines.append(lines[i].strip())
             i += 1

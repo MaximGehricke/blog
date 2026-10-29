@@ -733,10 +733,8 @@ The source’s main alphabetical list is retained below. Spelling and values are
 
 ## Notes
 
-- **IOR** means index of refraction (also called refractive index).
-- Values are context-dependent and may vary by wavelength, temperature, composition, and the particular material.
-- The supplied HTML repeats parts of the list and includes some conflicting entries. This Markdown version keeps the main list and the additional tables separate so differences remain visible.
-- Source listed in the original HTML: [CGSociety — A Complete IOR List](https://forums.cgsociety.org/t/a-complete-ior-list/1070401).
+**IOR** means index of refraction (also called refractive index).
+Source: [CGSociety — A Complete IOR List](https://forums.cgsociety.org/t/a-complete-ior-list/1070401).
 
 
 
