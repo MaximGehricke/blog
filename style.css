@@ -64,12 +64,24 @@
 /* ============================================================
    Base / Reset
    ============================================================ */
+html {
+	box-sizing: border-box;
+	overflow-x: hidden;
+}
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
 body {
 	margin: 0;
 	padding: 0;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	overflow-x: hidden;
+	width: 100%;
+	max-width: 100%;
 }
 
 a {
@@ -496,6 +508,46 @@ a {
 }
 
 /* ============================================================
+   Blog — Tables
+   ============================================================ */
+.blog-table-wrapper {
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	margin: 1.5em 0;
+	box-sizing: border-box;
+}
+
+.blog-body table {
+	width: 100%;
+	max-width: 100%;
+	border-collapse: collapse;
+	margin: 1.5em 0;
+	display: block;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	box-sizing: border-box;
+}
+
+.blog-body table th,
+.blog-body table td {
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	padding: 0.6em 0.9em;
+	font-size: 0.95rem;
+}
+
+.blog-body table th {
+	background: rgba(255, 255, 255, 0.05);
+	font-weight: bold;
+	color: var(--color-text);
+}
+
+.blog-body table tr:nth-child(even) {
+	background: rgba(255, 255, 255, 0.02);
+}
+
+/* ============================================================
    DESKTOP LAYOUT (min-width: 670px)
    ============================================================ */
 @media only screen and (min-width: 670px) {
@@ -685,7 +737,10 @@ a {
 		padding: 0 1.5rem;
 		gap: 2rem;
 		width: 100%;
+		max-width: 100%;
+		min-width: 0;
 		box-sizing: border-box;
+		overflow-x: hidden;
 	}
 
 	.blog-post {
@@ -742,7 +797,7 @@ a {
 
 	/* --- Navigation --- */
 	#menunav {
-		width: 100vw;
+		width: 100%;
 		display: flex;
 		justify-content: center;
 		padding-top: calc(var(--spacing-md) * 2);

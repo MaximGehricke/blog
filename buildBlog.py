@@ -352,7 +352,7 @@ def md_to_html(md):
                     while len(align_attrs) < num_cols:
                         align_attrs.append("")
 
-                    table_lines = ['<table>', '<thead>', '<tr>']
+                    table_lines = ['<div class="blog-table-wrapper">', '<table>', '<thead>', '<tr>']
                     for col_idx in range(num_cols):
                         h_text = headers[col_idx] if col_idx < len(headers) else ""
                         attr = align_attrs[col_idx]
@@ -378,6 +378,7 @@ def md_to_html(md):
 
                     table_lines.append('</tbody>')
                     table_lines.append('</table>')
+                    table_lines.append('</div>')
                     out.append("\n".join(table_lines))
                     continue
 
